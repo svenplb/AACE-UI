@@ -18,7 +18,7 @@ namespace ChessChallenge.Application
         public enum PlayerType
         {
             Human,
-            MyBot,
+            AACE,
             EvilBot
         }
 
@@ -73,7 +73,7 @@ namespace ChessChallenge.Application
             botMatchStartFens = FileHelper.ReadResourceFile("Fens.txt").Split('\n').Where(fen => fen.Length > 0).ToArray();
             botTaskWaitHandle = new AutoResetEvent(false);
 
-            StartNewGame(PlayerType.Human, PlayerType.MyBot);
+            StartNewGame(PlayerType.Human, PlayerType.AACE);
         }
 
         public void StartNewGame(PlayerType whiteType, PlayerType blackType)
@@ -194,13 +194,13 @@ namespace ChessChallenge.Application
                 boardUI.SetPerspective(PlayerWhite.IsHuman);
                 HumanWasWhiteLastGame = PlayerWhite.IsHuman;
             }
-            else if (PlayerWhite.Bot is MyBot && PlayerBlack.Bot is MyBot)
+            else if (PlayerWhite.Bot is AACE && PlayerBlack.Bot is AACE)
             {
                 boardUI.SetPerspective(true);
             }
             else
             {
-                boardUI.SetPerspective(PlayerWhite.Bot is MyBot);
+                boardUI.SetPerspective(PlayerWhite.Bot is AACE);
             }
         }
 
@@ -208,7 +208,7 @@ namespace ChessChallenge.Application
         {
             return type switch
             {
-                PlayerType.MyBot => new ChessPlayer(new MyBot(), type, GameDurationMilliseconds),
+                PlayerType.AACE => new ChessPlayer(new AACE(), type, GameDurationMilliseconds),
                 PlayerType.EvilBot => new ChessPlayer(new EvilBot(), type, GameDurationMilliseconds),
                 _ => new ChessPlayer(new HumanPlayer(boardUI), type)
             };
@@ -389,7 +389,6 @@ namespace ChessChallenge.Application
 
         public void DrawOverlay()
         {
-            BotBrainCapacityUI.Draw(tokenCount, debugTokenCount, MaxTokenCount);
             MenuUI.DrawButtons(this);
             MatchStatsUI.DrawMatchStats(this);
         }
@@ -405,8 +404,8 @@ namespace ChessChallenge.Application
             string nameB = GetPlayerName(botTypeB);
             if (nameA == nameB)
             {
-                nameA += " (A)";
-                nameB += " (B)";
+                nameA += " (original)";
+                nameB += " (copy)";
             }
             BotStatsA = new BotMatchStats(nameA);
             BotStatsB = new BotMatchStats(nameB);

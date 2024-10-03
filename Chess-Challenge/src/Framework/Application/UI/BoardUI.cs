@@ -202,6 +202,7 @@ namespace ChessChallenge.Application
             }
 
             DrawBorder();
+            //DrawHeading("Your Chess Game"); 
             ForEachSquare(DrawSquare);
             
             if (isAnimatingMove)
@@ -233,6 +234,16 @@ namespace ChessChallenge.Application
                     action(x, y);
                 }
             }
+        }
+
+        void DrawHeading(string heading)
+        {
+            const int fontSize = 48; // Adjust the font size as needed
+            const int yPosition = -squareSize * 4 - 50; // Position above the board
+            Vector2 headingPosition = new Vector2(-squareSize * 4, yPosition);
+            Color textColor = Color.WHITE; // Change the color if needed
+
+            UIHelper.DrawText(heading, headingPosition, fontSize, 0, textColor, UIHelper.AlignH.Centre, UIHelper.AlignV.Top);
         }
 
         void UpdateMoveAnimation(double animT)
