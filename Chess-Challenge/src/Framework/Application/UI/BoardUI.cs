@@ -202,7 +202,7 @@ namespace ChessChallenge.Application
             }
 
             DrawBorder();
-            //DrawHeading("Your Chess Game"); 
+            DrawHeading("Anti Adrian Chess Engine"); 
             ForEachSquare(DrawSquare);
             
             if (isAnimatingMove)
@@ -238,11 +238,13 @@ namespace ChessChallenge.Application
 
         void DrawHeading(string heading)
         {
-            const int fontSize = 48; // Adjust the font size as needed
-            const int yPosition = -squareSize * 4 - 50; // Position above the board
-            Vector2 headingPosition = new Vector2(-squareSize * 4, yPosition);
+            const int fontSize = 40; // Adjust the font size as needed
+            const int margin = 40; // Margin above the heading
+            const int yPosition = -squareSize * 4 - fontSize - margin; // Adjusted position with margin
+            Vector2 headingPosition = new Vector2(0, yPosition); // Centered horizontally
             Color textColor = Color.WHITE; // Change the color if needed
 
+            // Draw the heading centered
             UIHelper.DrawText(heading, headingPosition, fontSize, 0, textColor, UIHelper.AlignH.Centre, UIHelper.AlignV.Top);
         }
 

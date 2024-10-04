@@ -25,9 +25,9 @@ namespace ChessChallenge.Application
             {
                 controller.StartNewBotMatch(ChallengeController.PlayerType.AACE, ChallengeController.PlayerType.AACE);
             }
-            if (NextButtonInRow("AACE vs EvilBot", ref buttonPos, spacing, buttonSize))
+            if (NextButtonInRow("(n) AACE vs (o) AACE", ref buttonPos, spacing, buttonSize))
             {
-                controller.StartNewBotMatch(ChallengeController.PlayerType.AACE, ChallengeController.PlayerType.EvilBot);
+                controller.StartNewBotMatch(ChallengeController.PlayerType.AACE, ChallengeController.PlayerType.old_AACE);
             }
 
             // Page buttons
@@ -52,7 +52,7 @@ namespace ChessChallenge.Application
             buttonPos.Y += breakSpacing;
 
             bool isBigWindow = Raylib.GetScreenWidth() > Settings.ScreenSizeSmall.X;
-            string windowButtonName = isBigWindow ? "Smaller Window" : "Bigger Window";
+            string windowButtonName = isBigWindow ? "small" : "BIG BIG";
             if (NextButtonInRow(windowButtonName, ref buttonPos, spacing, buttonSize))
             {
                 Program.SetWindowSize(isBigWindow ? Settings.ScreenSizeSmall : Settings.ScreenSizeBig);

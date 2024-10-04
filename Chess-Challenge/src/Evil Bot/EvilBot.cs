@@ -1,54 +1,64 @@
 ﻿using ChessChallenge.API;
 using System;
+using ChessChallenge.API;
+using System;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using static ChessChallenge.Application.ConsoleHelper;
+
 
 namespace ChessChallenge.Example
 {
-    // A simple bot that can spot mate in one, and always captures the most valuable piece it can.
-    // Plays randomly otherwise.
-    public class EvilBot : IChessBot
+    public class old_AACE : IChessBot
     {
-        // Piece values: null, pawn, knight, bishop, rook, queen, king
-        int[] pieceValues = { 0, 100, 300, 300, 500, 900, 10000 };
+         private static readonly HttpClient client = new HttpClient();
 
-        public Move Think(Board board, Timer timer)
+
+    public Move Think(Board board, Timer timer)
+    {
+        Move[] moves = board.GetLegalMoves();
+
+        
+        var (bestMove, evaluation) = GetApiResponse(board).Result;
+
+
+        return new Move(bestMove, board);
+
+
+    }
+
+    private async Task<(string bestMove, int evaluation)> GetApiResponse(Board board)
         {
-            Move[] allMoves = board.GetLegalMoves();
+            string url = "http://localhost:8080/search_old";
+            string FEN = board.GetFenString();
+            string jsonContent = "{ \"fen\": \"" + FEN + "\" }";
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            // Pick a random move to play if nothing better is found
-            Random rng = new();
-            Move moveToPlay = allMoves[rng.Next(allMoves.Length)];
-            int highestValueCapture = 0;
 
-            foreach (Move move in allMoves)
+            try
             {
-                // Always play checkmate in one
-                if (MoveIsCheckmate(board, move))
-                {
-                    moveToPlay = move;
-                    break;
-                }
+                HttpResponseMessage response = await client.PostAsync(url, content);
+                response.EnsureSuccessStatusCode();
+                string responseBody = await response.Content.ReadAsStringAsync();
+                var result = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(responseBody);
+                //Log("Response from API: " + responseBody, false, ConsoleColor.Green);
 
-                // Find highest value capture
-                Piece capturedPiece = board.GetPiece(move.TargetSquare);
-                int capturedPieceValue = pieceValues[(int)capturedPiece.PieceType];
 
-                if (capturedPieceValue > highestValueCapture)
-                {
-                    moveToPlay = move;
-                    highestValueCapture = capturedPieceValue;
-                }
+                return (result.best_move, result.evaluation);
             }
-
-            return moveToPlay;
+            catch (HttpRequestException e)
+            {
+                Log($"Request error: {e.Message}", false, ConsoleColor.Red);
+                 return (null, 0);
+            }
         }
 
-        // Test if this move gives checkmate
-        bool MoveIsCheckmate(Board board, Move move)
-        {
-            board.MakeMove(move);
-            bool isMate = board.IsInCheckmate();
-            board.UndoMove(move);
-            return isMate;
-        }
+        private class ApiResponse
+            {
+                public string best_move { get; set; }
+                public int evaluation { get; set; }
+                public string fen_after_move { get; set; }
+            }
     }
 }

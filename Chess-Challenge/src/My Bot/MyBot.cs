@@ -38,7 +38,7 @@ public class AACE : IChessBot
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var result = System.Text.Json.JsonSerializer.Deserialize<ApiResponse>(responseBody);
-                //Log("Response from API: " + responseBody, false, ConsoleColor.Green);
+
                 return (result.best_move, result.evaluation);
             }
             catch (HttpRequestException e)

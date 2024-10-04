@@ -19,7 +19,7 @@ namespace ChessChallenge.Application
         {
             Human,
             AACE,
-            EvilBot
+            old_AACE
         }
 
         // Game state
@@ -209,7 +209,7 @@ namespace ChessChallenge.Application
             return type switch
             {
                 PlayerType.AACE => new ChessPlayer(new AACE(), type, GameDurationMilliseconds),
-                PlayerType.EvilBot => new ChessPlayer(new EvilBot(), type, GameDurationMilliseconds),
+                PlayerType.old_AACE => new ChessPlayer(new old_AACE(), type, GameDurationMilliseconds),
                 _ => new ChessPlayer(new HumanPlayer(boardUI), type)
             };
         }
